@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Madam Ji!</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffcccb; /* Light pink background */
+      overflow: hidden;
+      position: relative;
+      transition: background-color 0.5s ease;
+    }
+    body.dark-mode {
+      background-color: #000; /* Black background */
+    }
+    .slide {
+      display: none;
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 500px; /* Bigger box for first 5 slides */
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide.active {
+      display: block;
+    }
+    .slide.no-box {
+      background-color: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+    .text-container {
+      position: relative;
+      height: 120px; /* Adjusted for second slide */
+      overflow: hidden;
+    }
+    .text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 1.8em; /* Smaller text for second slide */
+      color: #333;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+    .text.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .text.exit {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    .buttons button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+    #yesButton {
+      background-color: #e91e63; /* Hot pink */
+    }
+    #noButton {
+      background-color: #333; /* Dark */
+    }
+    .dark-pink-button {
+      background-color: #ad1457; /* Dark pink */
+    }
+    .decorations {
+      position: fixed; /* Fixed position to center the image */
+      top: 20%; /* Positioned 20% from the top */
+      left: 50%; /* Centered horizontally */
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 5; /* Ensure it's above other elements */
+    }
+    .decorations.visible {
+      opacity: 1;
+    }
+    .decorations img {
+      width: 900px; /* Adjust the width as needed */
+      height: auto;
+      display: block; /* Ensure the image behaves as a block element */
+    }
+    .heart {
+      position: absolute;
+      top: -10%;
+      color: #ff69b4; /* Pink hearts */
+      font-size: 20px;
+      animation: float 5s ease-in infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating Hearts -->
+  <div id="heartsContainer"></div>
+
+  <!-- Slide 1 -->
+  <div class="slide active">
+    <div class="text-container">
+      <div class="text active" id="text1">It's Your Special Day Yeyey! 🎉</div>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <div class="text-container">
+      <div class="text" id="text2">To make something special for you, because you are special to me!</div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <h1>Do you wanna see what I made??</h1>
+    <div class="buttons">
+      <button id="yesButton" onclick="nextSlide()">Yes</button>
+      <button id="noButton" onclick="showPopup()">No</button>
+    </div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide">
+    <h1>Have a look at it, Madam Jiii</h1>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide no-box">
+    <div class="buttons">
+      <button id="toggleButton" class="dark-pink-button" onclick="toggleLights()">Lights On</button>
+    </div>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide no-box">
+    <div class="buttons">
+      <button id="decorateButton" class="dark-pink-button" onclick="decorate()">Decorate</button>
+      <button id="heartsButton" class="dark-pink-button" onclick="flyHearts()" style="display: none;">Hearts</button>
+    </div>
+    <div class="decorations" id="decorations">
+      <img src="C:\Users\mehta\Downloads\hbd.jpg" alt="Happy Birthday"> <!-- Replace with your image path -->
+    </div>
+  </div>
+
+  <!-- Slide 7 - Let's Cut the Cake -->
+  <div class="slide no-box">
+    <div class="buttons">
+      <button id="cutCakeButton" class="dark-pink-button" onclick="showCake()">Let's Cut the Cake Madam Ji</button>
+    </div>
+    <div class="decorations" id="cakeImageContainer">
+      <img src="cake.jpg" alt="Cake Image"> <!-- Replace with your cake image path -->
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const heartsContainer = document.getElementById('heartsContainer');
+    const decorations = document.getElementById('decorations');
+    const cakeImageContainer = document.getElementById('cakeImageContainer');
+    const toggleButton = document.getElementById('toggleButton');
+    const decorateButton = document.getElementById('decorateButton');
+    const heartsButton = document.getElementById('heartsButton');
+
+    // Create floating hearts
+    function createHearts() {
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = `${Math.random() * 100}vw`;
+        heart.style.animationDuration = `${Math.random() * 4 + 3}s`;
+        heartsContainer.appendChild(heart);
+      }
+    }
+
+    // Show the current slide
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      // Remove hearts from Slide 5 onwards
+      if (index >= 4) {
+        heartsContainer.innerHTML = '';
+      }
+
+      // Auto-switch for Slide 4
+      if (index === 3) {
+        setTimeout(() => nextSlide(), 3000); // Auto-switch after 3 seconds
+      }
+    }
+
+    // Text flow animation
+    function animateText(currentText, nextText) {
+      if (currentText && nextText) {
+        currentText.classList.add('exit');
+        nextText.classList.add('active');
+
+        setTimeout(() => {
+          currentText.classList.remove('active', 'exit');
+          nextText.classList.remove('exit');
+        }, 1000); // Match the transition duration
+      }
+    }
+
+    // Next slide
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        const currentText = slides[currentSlide].querySelector('.text.active');
+        const nextText = slides[currentSlide + 1].querySelector('.text');
+
+        animateText(currentText, nextText); // Animate text transition
+        currentSlide++;
+        showSlide(currentSlide);
+
+        // Change background to black after pressing "Yes" button
+        if (currentSlide === 3) {
+          document.body.classList.add('dark-mode');
+        }
+
+        // Auto-switch for first 2 slides
+        if (currentSlide < 2) {
+          setTimeout(() => nextSlide(), 3000); // Switch every 3 seconds
+        }
+      }
+    }
+
+    // Show popup for "No" button
+    function showPopup() {
+      alert("Please have a look at it");
+      nextSlide(); // Automatically move to the next slide after the popup
+    }
+
+    // Toggle lights
+    function toggleLights() {
+      document.body.classList.remove('dark-mode'); // Switch to light pink background
+      nextSlide(); // Move to the next slide
+    }
+
+    // Decorate
+    function decorate() {
+      decorations.classList.add('visible'); // Show "Happy Birthday" image
+      decorateButton.style.display = 'none'; // Hide the "Decorate" button
+      heartsButton.style.display = 'inline-block'; // Show the "Hearts" button
+    }
+
+    // Fly hearts
+    function flyHearts() {
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = `${Math.random() * 100}vw`;
+        heart.style.animationDuration = `${Math.random() * 4 + 3}s`;
+        heartsContainer.appendChild(heart);
+      }
+    }
+
+    // Show cake image
+    function showCake() {
+      cakeImageContainer.classList.add('visible'); // Show the cake image
+    }
+
+    // Initialize
+    createHearts(); // Add floating hearts
+    showSlide(currentSlide); // Show first slide
+
+    // Auto-switch for first 2 slides
+    if (currentSlide < 2) {
+      setTimeout(() => nextSlide(), 3000); // Switch every 3 seconds
+    }
+  </script>
+</body>
+</html>
